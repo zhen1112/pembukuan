@@ -1,0 +1,77 @@
+  <div class="container-fluid">
+
+<!-- Page Heading -->
+<h1 class="h3 mb-2 text-gray-800">Table Penjualan/Bulan </h1>
+<p class="mb-4">Table penjualan/bulan adalah table dimana barang sudah terjual dalam kurun waktu terentu
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Table penjualan</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                <?php
+    include 'koneksi.php'; // Sertakan file koneksi ke database
+    
+    $totals = array(); // Inisialisasi array untuk menyimpan total unit terjual dan jumlah penjualan per bulan
+    
+    // Lakukan pengulangan untuk setiap bulan dari Januari hingga Desember
+    for ($i = 1; $i <= 12; $i++) {
+        // Query untuk menghitung jumlah Harga_sesudah_diskon dari bulan ke-$i tahun 2024
+        $sql = "SELECT COUNT(*) AS total_unit_terjual, SUM(Harga_sesudah_diskon) AS total 
+                FROM data_penjualan 
+                WHERE MONTH(tanggal) = $i AND YEAR(tanggal) = 2024";
+
+        // Eksekusi query
+        $result = mysqli_query($conn, $sql);
+
+        // Periksa apakah query berhasil dieksekusi
+        if ($result) {
+            // Ambil hasil query
+            $row = mysqli_fetch_assoc($result);
+            
+            // Simpan hasil ke dalam array berdasarkan bulan
+            $totals[$i] = $row;
+        } else {
+            echo "Terjadi kesalahan dalam menjalankan query untuk bulan ke-$i.";
+        }
+    }
+?>
+            <thead>
+                <tr>
+                    <th>Bulan</th>
+                    <th>Unit Terjual</th>
+                    <th>Jumlah Penjualan</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>Bulan</th>
+                    <th>Unit Terjual</th>
+                    <th>Jumlah Penjualan</th>
+                    <th>Action</th>
+                </tr>
+            </tfoot>
+            <tbody>
+                <?php
+                    // Lakukan pengulangan untuk setiap bulan dan tampilkan data
+                    for ($i = 1; $i <= 12; $i++) {
+                        $row = $totals[$i]; // Ambil data total dari array berdasarkan bulan
+                        echo "<tr>";
+                        echo "<td>Bulan $i</td>";
+                        echo "<td>".$row['total_unit_terjual']."</td>";
+                        echo "<td>".$row['total']."</td>";
+                        echo "<td><button>Downloads</button></td>";
+                        echo "</tr>";
+                    }
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
